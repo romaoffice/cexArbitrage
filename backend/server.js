@@ -54,4 +54,4 @@ async function initial() {
       });
   }
 }
-app.listen(3000,"0.0.0.0" ,() => console.log(`Started server at http://localhost:3000!`));
+app.listen(80,"0.0.0.0" ,() => console.log(`Started server at http://localhost:80!`));
