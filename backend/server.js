@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const publicFolder = '../frontend/build';
 const fs = require( "fs");
-
+const {startScan} = require("./arb/index")
 
 var corsOptions = {
   origin: "*"
@@ -19,9 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
-require('./routes/hopper.routes')(app);
+require('./routes/signal.routes')(app);
 // require('./routes/native.routes')(app);
-require('./routes/tokenset.routes')(app);
 
 app.use(express.static(publicFolder))
 app.use('*',express.static(publicFolder))
@@ -54,4 +53,5 @@ async function initial() {
       });
   }
 }
+startScan();
 app.listen(80,"0.0.0.0" ,() => console.log(`Started server at http://localhost:80!`));

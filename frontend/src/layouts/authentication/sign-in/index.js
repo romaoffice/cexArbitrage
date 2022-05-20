@@ -69,7 +69,7 @@ function Basic() {
 
     dispatch(login(username, password))
       .then(() => {
-        props.history.push("/hoppers");
+        props.history.push("/signals");
         window.location.reload();
       })
       .catch(() => {
@@ -78,7 +78,7 @@ function Basic() {
   };
 
   if (isLoggedIn) {
-    return <Navigate to="/hoppers" />;
+    return <Navigate to="/signals" />;
   }
 
   return (

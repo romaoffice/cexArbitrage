@@ -1,7 +1,4 @@
-import Hoppers from "layouts/hoppers";
-import HopperUpdate from "layouts/hoppers/update";
-import Tokensets from "layouts/tokensets";
-import TokensetUpdate from "layouts/tokensets/update";
+import Signals from "layouts/signals";
 
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
@@ -12,37 +9,13 @@ import Icon from "@mui/material/Icon";
 const routes = [
   {
     type: "collapse",
-    name: "Dynamic Hoppers",
-    key: "hoppers",
+    name: "Signals",
+    key: "signals",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/hoppers",
-    component: <Hoppers />,
+    route: "/signals",
+    component: <Signals />,
   },
-  {
-    type: "route",
-    name: "Hopper",
-    key: "hopper",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/hoppers/:id",
-    component: <HopperUpdate />,
-  },
-  {
-    type: "collapse",
-    name: "Token Sets",
-    key: "tokensets",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tokensets",
-    component: <Tokensets />,
-  },
-  {
-    type: "route",
-    name: "Tokenset",
-    key: "tokenset",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tokensets/:id",
-    component: <TokensetUpdate />,
-  },
-  {
+    {
     type: "collapse",
     name: "Sign In",
     key: "sign-in",

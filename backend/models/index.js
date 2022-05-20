@@ -32,8 +32,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 
-db.hopper = require("../models/hopper.model.js")(sequelize, Sequelize);
-db.tokenset = require("../models/tokensets.model.js")(sequelize, Sequelize);
+db.signal = require("../models/signal.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
 

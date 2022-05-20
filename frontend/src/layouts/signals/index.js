@@ -29,7 +29,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 import DataTable from "examples/Tables/DataTable";
 import checkMiddle from "services/middle.service";
-import HoppersService from "services/hopper.service";
+import SignalsService from "services/signal.service";
 import { useEffect,useState } from "react";
 import showAlert from "services/alert"
 
@@ -38,50 +38,49 @@ import {
 } from "react-router-dom"
 // Data
 
-function Hoppers() {
+function Signals() {
   
   let navigate = useNavigate();
   //checkMiddle();
-  const [hoppers,setHoppers] = useState([]);
-  
-  const doEdit =(hopperId)=>{
-    navigate("/hoppers/"+hopperId, { replace: true });
-  }
-
-  const doDelete =async(hopperId)=>{
-    await HoppersService.deleteItem(hopperId);
-    process();
-    showAlert.showAlert("Sent request to delete")
+  const [signals,setSignals] = useState([]);
+  const getExchangeName = (index)=>{
+    if(Number(index)==0) return "Binance";
+    if(Number(index)==1) return "Kucoin";
+    if(Number(index)==2) return "Kraken";
   }
   async function process() {
-    const hoppersData = await HoppersService.getList();
+    const SignalsData = await SignalsService.getList();
     let newData = [];
-    hoppersData.data.map((hopper)=>{
-      newData.push({
-        name : hopper.hoppername,
-        action:<MDBox lineHeight={1} >
-                <MDButton variant="outlined" size="small" color="secondary" onClick={()=>doEdit(hopper.id)}>
-                  Edit
-                </MDButton>&nbsp;
-                <MDButton variant="outlined" size="small" color="warning" onClick={()=>doDelete(hopper.id)}>
-                  Delete
-                </MDButton>
-              </MDBox>
-      })
+    console.log({SignalsData})
+    SignalsData.data.map((signal)=>{
+      const od = new Date(signal.openTime*1000)
+      const openDate = (od.toLocaleString());//.substring(0,19).replace('T'," ").replace('Z',' ')
+      const symbol = signal.symbol;
+      const buyExchange = getExchangeName(signal.buyExchange);
+      const sellExchange = getExchangeName(signal.sellExchange);
+      const ask = signal.ask;
+      const bid = signal.bid;
+      const profit = signal.profit;
+      newData.push({openDate,symbol,buyExchange,ask,sellExchange,bid,profit})
+
     })
-    setHoppers(newData);
+    console.log(newData)
+    setSignals(newData);
+    setTimeout(()=>{process()},30000)
   }
 
   useEffect(() => {
-
-     process();
+    process();
   }, [])
-  const hoppersColumns =[
-      { Header: "Name", accessor: "hoppername",  align: "left" },
-      { Header: "Token Set", accessor: "tokensetName",  align: "left" },
-      { Header: "Interval", accessor: "interval",  align: "left" },
-      { Header: "Force Sell", accessor: "forceSell",  align: "left" },
-      { Header: "Actions", accessor: "action", align: "center" },
+  const signalsColumns =[
+      { Header: "Open Date", accessor: "openDate",  align: "left" },
+      { Header: "Symbol", accessor: "symbol",  align: "left" },
+      { Header: "Buy Exchange", accessor: "buyExchange",  align: "left" },
+      { Header: "Sell Exchange", accessor: "sellExchange",  align: "left" },
+      { Header: "ask", accessor: "ask",  align: "right" },
+      { Header: "bid", accessor: "bid", align: "right" },
+      { Header: "profit(%)", accessor: "profit", align: "right" },
+
     ];
   
 
@@ -94,7 +93,7 @@ function Hoppers() {
             <Card>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ "columns":hoppersColumns, "rows":hoppers }}
+                  table={{ "columns":signalsColumns, "rows":signals }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
@@ -103,17 +102,10 @@ function Hoppers() {
               </MDBox>
             </Card>
           </Grid>
-          <Grid item xs={12}  md={4} lg={4}>
-          </Grid>
-          <Grid item xs={12}  md={4} lg={4}>
-           <MDButton variant="contained" color="info" fullWidth onClick={()=>doEdit("Create")}>Add New</MDButton>       
-          </Grid>
-          <Grid item xs={12}  md={4} lg={4}>
-          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>
   );
 }
 
-export default Hoppers;
+export default Signals;
