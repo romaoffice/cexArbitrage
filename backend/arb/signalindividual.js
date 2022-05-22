@@ -11,7 +11,7 @@ class individualSignal {
   	this.setup();
   	const self = this;
 	const checkSignal = async()=>{
-		if(Object.keys(self.priceInfo.prices).length>1){
+		if(Object.keys(self.priceInfo.prices).length>2){
 			self.priceInfo.bestAsk = {exchange:EXCHANGES.BINANCEID,price:self.priceInfo.prices[EXCHANGES.BINANCEID].ask}
 			self.priceInfo.bestBid = {exchange:EXCHANGES.BINANCEID,price:self.priceInfo.prices[EXCHANGES.BINANCEID].bid}
 			Object.keys(self.priceInfo.prices).forEach((key)=>{
@@ -124,7 +124,7 @@ class individualSignal {
 		}else if(tickerInfo.event=="pong") {
 			console.log("pong kraken");
 		}else{
-			//self.priceInfo.prices[EXCHANGES.KRAKENID] = {ask:Number(tickerInfo.ask),bid:Number(tickerInfo.bid)}
+			self.priceInfo.prices[EXCHANGES.KRAKENID] = {ask:Number(tickerInfo.ask),bid:Number(tickerInfo.bid)}
 		}
  	});
 	setInterval(()=>{
