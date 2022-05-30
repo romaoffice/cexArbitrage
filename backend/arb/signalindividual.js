@@ -3,6 +3,7 @@ const {config} = require('./const/config')
 const axios = require('axios')
 const {EXCHANGES,PAIRSINFO,APIKEYS} = require("./const/pairs")
 const db = require("../models");
+const expire = 15000;
 class individualSignal {
   constructor(symbol,configArb) {
   	this.maxProfit = 0;
@@ -15,6 +16,10 @@ class individualSignal {
 			self.priceInfo.bestAsk = {exchange:EXCHANGES.BINANCEID,price:self.priceInfo.prices[EXCHANGES.BINANCEID].ask}
 			self.priceInfo.bestBid = {exchange:EXCHANGES.BINANCEID,price:self.priceInfo.prices[EXCHANGES.BINANCEID].bid}
 			Object.keys(self.priceInfo.prices).forEach((key)=>{
+				if(Date.now()-self.priceInfo.prices[key].update>expire){
+					console.log("Expired signal");
+					process.exit();
+				}
 				if(self.priceInfo.bestAsk.price>self.priceInfo.prices[key].ask){
 					self.priceInfo.bestAsk = {exchange:key,price:self.priceInfo.prices[key].ask}
 				}
@@ -76,7 +81,7 @@ class individualSignal {
  	const wsBinance = new WebSocket(urlBN);
 	  wsBinance.on('message', function incoming(data) {
 	    const tickerInfo = JSON.parse(data);
-	    self.priceInfo.prices[EXCHANGES.BINANCEID] = {ask:Number(tickerInfo.a),bid:Number(tickerInfo.b)}
+	    self.priceInfo.prices[EXCHANGES.BINANCEID] = {ask:Number(tickerInfo.a),bid:Number(tickerInfo.b),update:Date.now()}
 	  });  	
 	
 	const tokenUrlKucoin = "https://api-futures.kucoin.com/api/v1/bullet-public"
@@ -90,7 +95,7 @@ class individualSignal {
 	wsKucoin.on('message', function incoming(data) {
 		const tickerInfo = JSON.parse(data);
 		if(tickerInfo.type == "message"){
-			self.priceInfo.prices[EXCHANGES.KUCOINID] = {ask:Number(tickerInfo.data.bestAskPrice),bid:Number(tickerInfo.data.bestBidPrice)}
+			self.priceInfo.prices[EXCHANGES.KUCOINID] = {ask:Number(tickerInfo.data.bestAskPrice),bid:Number(tickerInfo.data.bestBidPrice),update:Date.now()}
 		}
 		if(tickerInfo.type=="welcome"){
 			const jsonData = {
@@ -124,7 +129,7 @@ class individualSignal {
 		}else if(tickerInfo.event=="pong") {
 			console.log("pong kraken");
 		}else{
-			self.priceInfo.prices[EXCHANGES.KRAKENID] = {ask:Number(tickerInfo.ask),bid:Number(tickerInfo.bid)}
+			self.priceInfo.prices[EXCHANGES.KRAKENID] = {ask:Number(tickerInfo.ask),bid:Number(tickerInfo.bid),update:Date.now()}
 		}
  	});
 	setInterval(()=>{
