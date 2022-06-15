@@ -39,7 +39,7 @@ class individualSignal {
 			self.priceInfo.signals = FilteredSignal;
 			if(self.maxProfit<profit) {
 				self.maxProfit = profit;
-				//console.log("Max profit",symbol,self.maxProfit,self.config.level)
+				console.log("Max profit",symbol,self.maxProfit,self.config.level)
 			}
 			if(profit>self.config.level){
 				let exist = false;
